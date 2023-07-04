@@ -28,10 +28,11 @@ class MainActivity : AppCompatActivity() {
 
         val button: Button = findViewById(R.id.button)
         button.setOnClickListener {
-            val intent = Intent(this, ListActivity::class.java)
+            val intent = Intent(this, secondActivity::class.java)
             intent.putExtra("title","value")
             intent.putExtra("date","23年7月1日")
-            resultLauncher.launch(intent)
+//            resultLauncher.launch(intent)
+            startActivity(intent)
         }
     }
 }
