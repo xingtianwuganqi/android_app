@@ -12,11 +12,9 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
-            android:name=".secondActivity"
+            android:name=".SecondActivity"
             android:exported="false" />
-        <activity
-            android:name=".ListActivity"
-            android:exported="false"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
