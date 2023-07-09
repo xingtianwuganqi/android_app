@@ -31,5 +31,23 @@ class MainActivity : BaseActivity() {
             intent.putExtra("date","23年7月1日")
             startActivityed.launch(intent)
         }
+
+        val three_button: Button = findViewById(R.id.threeBtn)
+        three_button.setOnClickListener {
+            val intent = Intent(this, ThreeActivity::class.java)
+            startActivityed.launch(intent)
+        }
+
+        val listDetail: Button = findViewById(R.id.listDetail)
+        listDetail.setOnClickListener {
+            val intent = Intent(this, ListDetailActivity::class.java)
+            startActivityed.launch(intent)
+        }
+
+        val recycView: Button = findViewById(R.id.recycBtn)
+        recycView.setOnClickListener {
+            val intent = Intent(this, RecyclerActivity::class.java)
+            startActivityed.launch(intent)
+        }
     }
 }
