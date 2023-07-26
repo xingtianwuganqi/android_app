@@ -68,6 +68,12 @@ class MainActivity : BaseActivity() {
         intentFilter.addAction("com.example.custom_broad")
         timeChangeRecever = TimeChangeRecever()
         registerReceiver(timeChangeRecever, intentFilter)
+
+        val dataSave: Button = findViewById(R.id.dataSave)
+        dataSave.setOnClickListener {
+            val intent = Intent(this,DataSaveActivity::class.java)
+            startActivityed.launch(intent)
+        }
     }
 
     override fun onDestroy() {
