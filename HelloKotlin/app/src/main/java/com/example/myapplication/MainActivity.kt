@@ -74,6 +74,12 @@ class MainActivity : BaseActivity() {
             val intent = Intent(this,DataSaveActivity::class.java)
             startActivityed.launch(intent)
         }
+
+        val titleLayoutBtn:Button = findViewById(R.id.titleLayout)
+        titleLayoutBtn.setOnClickListener {
+            val intent = Intent(this,TitleLayoutActivity::class.java)
+            startActivityed.launch(intent)
+        }
     }
 
     override fun onDestroy() {
