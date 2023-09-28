@@ -80,6 +80,12 @@ class MainActivity : BaseActivity() {
             val intent = Intent(this,TitleLayoutActivity::class.java)
             startActivityed.launch(intent)
         }
+
+        val tabbarBtn: Button = findViewById(R.id.tabbar)
+        tabbarBtn.setOnClickListener {
+            val intent = Intent(this,TabbarActivity::class.java)
+            startActivityed.launch(intent)
+        }
     }
 
     override fun onDestroy() {
