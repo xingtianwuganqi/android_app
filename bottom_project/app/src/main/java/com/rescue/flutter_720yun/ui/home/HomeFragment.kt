@@ -50,10 +50,10 @@ class HomeFragment : Fragment() {
         }
         val button: Button = binding.testButton
         button.setOnClickListener {
-            networking()
+//            networking()
 //            networkingTest()
-//            networkingSecond()
-            networkingThird()
+            networkingSecond()
+//            networkingThird()
         }
         return root
     }
@@ -65,18 +65,17 @@ class HomeFragment : Fragment() {
 
 
     private fun networking() {
-        val param = Data(1, 20)
-        httpApi.post(param,"/api/v1/topiclist/", object: HttpCallback {
-            override fun onSuccess(data: ResponseBody?) {
-                Log.d("TAG", "data code")
-                if (data == null) {
-                    Log.d("TAG", "data is Empty")
+        val param = Data(1, 20, 0)
+        httpApi.post(param,"api/v1/topiclist/", object: HttpCallback {
+            override fun onSuccess(data: okhttp3.Response) {
+                if (data != null) {
+                    Log.d("Tag", "body is not empty")
+                    data.body?.let {
+                        Log.d("TAG", it.string())
+                    }
                 }else{
-                    Log.d("TAG", "data is not Empty")
-                    data.string().let { Log.d("TAG", it) }
+                    Log.d("Tag", "body is Empty")
                 }
-
-
             }
 
             override fun onFailed(error: Any?) {
@@ -90,8 +89,7 @@ class HomeFragment : Fragment() {
     private fun networkingTest() {
         Log.i("TAG", "fuck body 2")
         val appService = ServiceCreator.create<AppService>()
-        val data = Data(1, 20)
-        appService.getTopicList(data).enqueue(object : Callback<ResponseBody> {
+        appService.getTopicList(1,20,1).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(p0: Call<ResponseBody>, p1: Response<ResponseBody>) {
                 Log.i("TAG", "Data code")
                 if (p1.body() == null) {
@@ -100,9 +98,9 @@ class HomeFragment : Fragment() {
                     Log.d("TAG","fuck")
                 }
 
-                if (data != null) {
+                if (p1.body() != null) {
                     Log.i("TAG", "Data code")
-                    Log.d("TAG", data.toString())
+                    Log.d("TAG", p1.body()!!.string())
                 }
             }
 
@@ -121,14 +119,14 @@ class HomeFragment : Fragment() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val appService = retrofit.create(AppService::class.java)
-        val data = Data(1, 20)
-        appService.getTopicList(data).enqueue(object : Callback<ResponseBody> {
+        appService.getTopicList(1, 20, 0).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(p0: Call<ResponseBody>, p1: Response<ResponseBody>) {
                 Log.d("TAG", "Fuck success")
-                if (p1.body() == null) {
+                if (p1 == null) {
                     Log.d("TAG", "mmp")
                 }else{
                     Log.d("TAG","fuck")
+                    print(p1)
                 }
                 p1.body()?.let { Log.d("Tag", it.string()) }
             }
@@ -142,7 +140,7 @@ class HomeFragment : Fragment() {
 
     private fun networkingThird() {
         val service = ServiceSecond.create<AppService>()
-        service.getIssuesList().enqueue(object : Callback<ResponseBody> {
+        service.postTest().enqueue(object : Callback<ResponseBody> {
             override fun onResponse(p0: Call<ResponseBody>, p1: Response<ResponseBody>) {
                 if (p1.body() == null) {
                     Log.d("TAG", "body empty")

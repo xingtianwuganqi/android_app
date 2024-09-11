@@ -4,7 +4,9 @@ import android.util.Log
 import com.google.gson.Gson
 import okhttp3.Call
 import okhttp3.Callback
+import okhttp3.FormBody
 import okhttp3.HttpUrl
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttp
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -21,7 +23,7 @@ class OkHttpApi: HttpApi{
         private const val TAG = "OkHttpApi"
     }
 
-    private var baseUrl = "https://test.rxswift.cn"
+    private var baseUrl = "http://test.rxswift.cn/"
 
     private val logging = HttpLoggingInterceptor()
 
@@ -32,7 +34,13 @@ class OkHttpApi: HttpApi{
         .writeTimeout(30, TimeUnit.SECONDS)// 向服务器写入数据的时长，默认10s
         .retryOnConnectionFailure(true)
         .followRedirects(false)
-        .addInterceptor(logging)
+        .addInterceptor {
+            val original = it.request()
+            val requestBuilder = original.newBuilder()
+                .header("Content-Type", "application/x-www-form-urlencoded") //multipart/form-data
+            val request = requestBuilder.build()
+            it.proceed(request)
+        }
         .build()
 
     override fun get(param: Map<String, Any>, path: String, callback: HttpCallback) {
@@ -52,7 +60,7 @@ class OkHttpApi: HttpApi{
             }
 
             override fun onResponse(call: Call, response: Response) {
-                callback.onSuccess(response.body)
+                callback.onSuccess(response)
             }
         })
     }
@@ -60,19 +68,22 @@ class OkHttpApi: HttpApi{
     override fun post(body: Any, path: String, callback: HttpCallback) {
         logging.setLevel(HttpLoggingInterceptor.Level.BODY) // Log the request and response bodies
         val url = "$baseUrl$path"
+        print(body.toString())
+        // 构建表单数据
+        val formBody = FormBody.Builder()
+            .add("page", "1")
+            .build()
         val request = Request.Builder()
-            .post(Gson().toJson(body).toRequestBody())
+            .post(formBody)
             .url(url)
             .build()
-        Log.d("Tag", url)
-        Log.d("TAG", Gson().toJson(body).toRequestBody().toString())
         mClient.newCall(request).enqueue(object: Callback{
             override fun onFailure(call: Call, e: IOException) {
                 callback.onFailed(e.message)
             }
 
             override fun onResponse(call: Call, response: Response) {
-                callback.onSuccess(response.body)
+                callback.onSuccess(response)
             }
         })
     }
