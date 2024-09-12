@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 class TopicListAdapter(private val list: List<Int>): RecyclerView.Adapter<TopicListAdapter.ViewHolder>() {
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val name = view.findViewById<TextView>(R.id.text_notifications)
-        
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
