@@ -8,34 +8,63 @@
 
     <ImageView
         android:id="@+id/head_img"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="12dp"
-        android:layout_marginStart="15dp"/>
+        android:layout_marginLeft="15dp"/>
 
 
     <TextView
         android:id="@+id/nick_name"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="@id/head_img"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:textSize="16dp"
+        android:gravity="center_horizontal"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toRightOf="@id/head_img"
         app:layout_constraintRight_toLeftOf="@id/more_btn"
-        app:layout_constraintBaseline_toBaselineOf="@id/head_img"/>
+        app:layout_constraintBottom_toBottomOf="@id/head_img"
+        app:layout_constraintTop_toTopOf="@id/head_img"
+       />
 
     <Button
         android:id="@+id/more_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="12dp"
+        android:text="more"
+        app:layout_constraintLeft_toRightOf="@id/nick_name"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBaseline_toBaselineOf="@id/head_img"
+        app:layout_constraintTop_toTopOf="@id/nick_name"
+        app:layout_constraintBottom_toBottomOf="@id/nick_name"
         android:layout_marginRight="10dp"/>
+
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/head_img"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:textColor="#333333"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="15dp"
+        android:background="#EEEEEE"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
