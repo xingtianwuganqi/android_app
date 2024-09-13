@@ -1,6 +1,8 @@
 package com.rescue.flutter_720yun
 
 import com.google.gson.JsonObject
+import com.rescue.flutter_720yun.models.homemodel.BaseListResp
+import com.rescue.flutter_720yun.models.homemodel.HomeListModel
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
@@ -15,8 +17,7 @@ interface AppService {
 //    @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("api/v1/topiclist/")
-    fun getTopicList(@Field("page") page: Int, @Field("size") size: Int,@Field("order") order: Int): Call<ResponseBody>
-
+    fun getTopicList(@Field("page") page: Int, @Field("size") size: Int,@Field("order") order: Int): Call<BaseListResp<HomeListModel>>
 
     @GET("repos/square/okhttp/issues")
     fun getIssuesList(): Call<ResponseBody>
