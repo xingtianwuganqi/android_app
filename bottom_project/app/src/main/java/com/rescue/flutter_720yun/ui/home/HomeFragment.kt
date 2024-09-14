@@ -53,8 +53,10 @@ class HomeFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         homeViewModel.models.observe(viewLifecycleOwner, Observer {
-            adapter = TopicListAdapter(it)
-            recyclerView.adapter = adapter
+            context?.let { it1 ->
+                adapter = TopicListAdapter(it1, it)
+                recyclerView.adapter = adapter
+            }
         })
         homeViewModel.fetchData()
         return root
