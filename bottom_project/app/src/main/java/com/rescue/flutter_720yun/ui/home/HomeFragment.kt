@@ -28,8 +28,8 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 //    private val httpApi = OkHttpApi()
 //    private lateinit var adapter: TopicListAdapter
-    private lateinit var homeAdapter: HomeListAdapter
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+//    private lateinit var homeAdapter: HomeListAdapter
+//    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,7 +42,7 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
 
         val recyclerView: RecyclerView = binding.recyclerview
-        homeAdapter = HomeListAdapter(requireContext())
+        val homeAdapter = HomeListAdapter(requireContext())
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = homeAdapter.withLoadStateFooter(
             footer = HomeLoadStateAdapter {
@@ -50,7 +50,7 @@ class HomeFragment : Fragment() {
             }
         )
 
-        swipeRefreshLayout = binding.swipeRefreshLayout
+        var swipeRefreshLayout = binding.swipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener {
             homeAdapter.refresh()
         }
@@ -62,22 +62,22 @@ class HomeFragment : Fragment() {
             }
         }
 
-//        homeAdapter.addLoadStateListener { loadState ->
-//            when(loadState.refresh) {
-//                is LoadState.Loading -> {
-//                    swipeRefreshLayout.isRefreshing = true
-//                }
-//
-//                is LoadState.NotLoading ->{
-//                    swipeRefreshLayout.isRefreshing = false
-//                }
-//
-//                is LoadState.Error -> {
-//                    val errorState = loadState.refresh as LoadState.Error
-//                    Log.e("Paging error", "Error: ${errorState.error.message}")
-//                }
-//            }
-//        }
+        homeAdapter.addLoadStateListener { loadState ->
+            when(loadState.refresh) {
+                is LoadState.Loading -> {
+                    swipeRefreshLayout.isRefreshing = true
+                }
+
+                is LoadState.NotLoading ->{
+                    swipeRefreshLayout.isRefreshing = false
+                }
+
+                is LoadState.Error -> {
+                    val errorState = loadState.refresh as LoadState.Error
+                    Log.e("Paging error", "Error: ${errorState.error.message}")
+                }
+            }
+        }
 
 //        homeViewModel.models.observe(viewLifecycleOwner, Observer {
 //            context?.let { it1 ->
