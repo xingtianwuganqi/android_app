@@ -11,6 +11,7 @@ data class BaseListResp<T> (
     val data: List<T>,
     val message: String
 )
+
 /*
 "userInfo": {
                 "id": 26,
@@ -33,6 +34,7 @@ data class UserInfo(
 )
 
 data class HomeListModel (
+    val id: Int?,
     val content: String,
     val create_time: String,
     val upload_time: String,

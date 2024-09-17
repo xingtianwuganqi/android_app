@@ -36,6 +36,8 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+
 }
 
 dependencies {
@@ -48,15 +50,33 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.ui.android)
+//    implementation(libs.androidx.ui.desktop)
+//    implementation(libs.androidx.ui.jvmstubs)
+    implementation(libs.androidx.leanback)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("com.google.code.gson:gson:2.11.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation("com.makeramen:roundedimageview:2.3.0")
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.gson)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.glide)
+    implementation(libs.roundedimageview)
+    implementation(libs.androidx.paging.runtime)
+//    implementation(libs.kotlinx.coroutines.core)
+//    implementation(libs.kotlinx.coroutines.android)
+//    implementation(libs.androidx.swiperefreshlayout) // SwipeRefreshLayout
+
+
 }
+
+//configurations.all {
+//    resolutionStrategy.eachDependency {
+//        if (requested.group == "androidx.compose.ui") {
+//            useVersion("1.7.0") // 统一使用 1.7.1 版本
+//        }
+//    }
+//}

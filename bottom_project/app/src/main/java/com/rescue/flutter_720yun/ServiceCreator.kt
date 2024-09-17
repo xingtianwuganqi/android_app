@@ -1,10 +1,17 @@
 package com.rescue.flutter_720yun
+import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 object ServiceCreator {
     private const val BASE_URL = "http://test.rxswift.cn/"
@@ -39,17 +46,27 @@ object ServiceCreator {
     fun <T> create(serviceClass: Class<T>): T = retrofit.create(serviceClass)
 
     inline fun <reified T> create(): T = create(T::class.java)
+
 }
 
+suspend fun <T> Call<T>.awaitResponse(): T {
+    return suspendCoroutine { continuation ->
+        enqueue(object : Callback<T> {
+            override fun onResponse(call: Call<T>, response: Response<T>) {
+                if (response.isSuccessful) {
+                    continuation.resume(response.body()!!)
+                } else {
+                    continuation.resumeWithException(Exception("Response error"))
+                }
+            }
 
-object ServiceSecond {
-    private const val BASE_URL = "http://pet-test.rxswift.cn/"
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    fun <T> create(serviceClass: Class<T>): T = retrofit.create(serviceClass)
-
-    inline fun <reified T> create(): T = create(T::class.java)
+            override fun onFailure(call: Call<T>, t: Throwable) {
+                continuation.resumeWithException(t)
+            }
+        })
+//
+//        continuation.invokeOnCancellation {
+//            cancel()
+//        }
+    }
 }

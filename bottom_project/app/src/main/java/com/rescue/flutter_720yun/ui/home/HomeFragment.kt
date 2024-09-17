@@ -5,28 +5,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.GsonBuilder
-import com.rescue.flutter_720yun.AppService
-import com.rescue.flutter_720yun.Data
-import com.rescue.flutter_720yun.HttpCallback
-import com.rescue.flutter_720yun.OkHttpApi
-import com.rescue.flutter_720yun.ServiceCreator
-import com.rescue.flutter_720yun.ServiceSecond
-import com.rescue.flutter_720yun.TopicListAdapter
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.rescue.flutter_720yun.HomeListAdapter
+import com.rescue.flutter_720yun.HomeLoadStateAdapter
 import com.rescue.flutter_720yun.databinding.FragmentHomeBinding
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -35,9 +26,10 @@ class HomeFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-    private val httpApi = OkHttpApi()
-    private lateinit var adapter: TopicListAdapter
-
+//    private val httpApi = OkHttpApi()
+//    private lateinit var adapter: TopicListAdapter
+    private lateinit var homeAdapter: HomeListAdapter
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,15 +42,50 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
 
         val recyclerView: RecyclerView = binding.recyclerview
+        homeAdapter = HomeListAdapter(requireContext())
         recyclerView.layoutManager = LinearLayoutManager(context)
-
-        homeViewModel.models.observe(viewLifecycleOwner, Observer {
-            context?.let { it1 ->
-                adapter = TopicListAdapter(it1, it)
-                recyclerView.adapter = adapter
+        recyclerView.adapter = homeAdapter.withLoadStateFooter(
+            footer = HomeLoadStateAdapter {
+                homeAdapter.retry()
             }
-        })
-        homeViewModel.fetchData()
+        )
+
+        swipeRefreshLayout = binding.swipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener {
+            homeAdapter.refresh()
+        }
+
+        lifecycleScope.launch {
+            homeViewModel.items.collectLatest {
+                homeAdapter.submitData(it)
+                swipeRefreshLayout.isRefreshing = false
+            }
+        }
+
+//        homeAdapter.addLoadStateListener { loadState ->
+//            when(loadState.refresh) {
+//                is LoadState.Loading -> {
+//                    swipeRefreshLayout.isRefreshing = true
+//                }
+//
+//                is LoadState.NotLoading ->{
+//                    swipeRefreshLayout.isRefreshing = false
+//                }
+//
+//                is LoadState.Error -> {
+//                    val errorState = loadState.refresh as LoadState.Error
+//                    Log.e("Paging error", "Error: ${errorState.error.message}")
+//                }
+//            }
+//        }
+
+//        homeViewModel.models.observe(viewLifecycleOwner, Observer {
+//            context?.let { it1 ->
+//                adapter = TopicListAdapter(it1, it)
+//                recyclerView.adapter = adapter
+//            }
+//        })
+//        homeViewModel.fetchData(true)
         return root
     }
 
