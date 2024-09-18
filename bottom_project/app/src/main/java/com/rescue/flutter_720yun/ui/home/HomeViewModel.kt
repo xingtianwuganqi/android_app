@@ -1,5 +1,6 @@
 package com.rescue.flutter_720yun.ui.home
 
+import android.app.Service
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,15 +16,16 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class HomeViewModel(private val appService: AppService) : ViewModel() {
+class HomeViewModel : ViewModel() {
 
-    var items = Pager(PagingConfig(pageSize = 20)) {
+    private var appService = ServiceCreator.create<AppService>()
+    var items = Pager(PagingConfig(pageSize = 10)) {
         HomePagingSource(appService)
     }.flow.cachedIn(viewModelScope)
 
     // 手动刷新列表
     fun refreshPagingData() {
-        items = Pager(PagingConfig(pageSize = 20)) {
+        items = Pager(PagingConfig(pageSize = 10)) {
             HomePagingSource(appService)
         }.flow.cachedIn(viewModelScope)
     }

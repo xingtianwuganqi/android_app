@@ -15,7 +15,7 @@ class HomePagingSource(
             // 当前页码，第一页时默认为 1
             val currentPage = params.key ?: 1
             // 从 API 获取数据
-            val response = apiService.getTopicList(currentPage, 20, 0).awaitResponse()
+            val response = apiService.getTopicList(currentPage, 10, 0).awaitResponse()
             // 获取响应数据列表
             val items = response.data
             LoadResult.Page(
