@@ -1,4 +1,4 @@
-package com.rescue.flutter_720yun.models.homemodel
+package com.rescue.flutter_720yun.models
 
 data class BaseResponse<T> (
     val code: Int,

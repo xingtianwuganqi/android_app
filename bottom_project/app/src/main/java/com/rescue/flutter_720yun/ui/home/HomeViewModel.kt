@@ -1,20 +1,12 @@
 package com.rescue.flutter_720yun.ui.home
 
-import android.app.Service
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.rescue.flutter_720yun.AppService
-import com.rescue.flutter_720yun.ServiceCreator
-import com.rescue.flutter_720yun.models.homemodel.BaseListResp
-import com.rescue.flutter_720yun.models.homemodel.HomeListModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.rescue.flutter_720yun.network.AppService
+import com.rescue.flutter_720yun.network.ServiceCreator
 
 class HomeViewModel : ViewModel() {
 

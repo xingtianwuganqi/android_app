@@ -14,11 +14,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
-import com.rescue.flutter_720yun.BlankFragment
 import com.rescue.flutter_720yun.R
 import com.rescue.flutter_720yun.databinding.FragmentDashboardBinding
 
-class DashboardFragment : Fragment(), BlankFragment.OnButtonClickListener {
+class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
 
@@ -70,51 +69,9 @@ class DashboardFragment : Fragment(), BlankFragment.OnButtonClickListener {
             textView.text = it
         }
 
-        // 将自定的fragment添加到fragment上
-        val blankFragment = BlankFragment()
-        childFragmentManager.beginTransaction().add(R.id.frame_view, blankFragment).commit()
-
-
-
-        liveData.observe(viewLifecycleOwner, Observer {
-            Log.i("TAG", "--mliveData--触发了观察 数据发送变化--$it")
-        })
-
-        liveMapData.observe(viewLifecycleOwner, Observer {
-            Log.i("TAG", "liveData map 转换后的数据发送变化 -- $it")
-        })
-
-        liveMapData2.observe(viewLifecycleOwner, Observer {
-            Log.i("TAG", "liveData map2 转换后的数据发送变化 -- $it")
-        })
-
-        switchLiveData.observe(viewLifecycleOwner, Observer {
-            Log.i("TAG", "switchLiveData 转换后的数据发送变化 -- $it")
-        })
-
-        multiLiveData.addSource(liveTwo, Observer {
-            Log.i("TAG", "liveOne --$it")
-            multiLiveData.value = it
-        })
-
-        multiLiveData.addSource(liveOne, Observer {
-            Log.i("TAG", "liveOne --$it")
-            multiLiveData.value = it
-        })
-
-        multiLiveData.observe(viewLifecycleOwner, Observer {
-            Log.i("TAG", "multiLiveData 转换后的数据发送变化 -- $it")
-        })
-
         return root
     }
 
-    override fun onButtonClicked() {
-        number += 1
-        liveData.value = number.toString()
-        liveOne.value = (number + 3).toString()
-        liveTwo.value = (number + 4).toString()
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

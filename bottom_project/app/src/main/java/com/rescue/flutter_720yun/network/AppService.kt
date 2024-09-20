@@ -1,16 +1,12 @@
-package com.rescue.flutter_720yun
+package com.rescue.flutter_720yun.network
 
-import com.google.gson.JsonObject
-import com.rescue.flutter_720yun.models.homemodel.BaseListResp
-import com.rescue.flutter_720yun.models.homemodel.HomeListModel
+import com.rescue.flutter_720yun.models.BaseListResp
+import com.rescue.flutter_720yun.models.HomeListModel
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface AppService {
