@@ -28,7 +28,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 //    private val httpApi = OkHttpApi()
 //    private lateinit var adapter: TopicListAdapter
-//    private lateinit var homeAdapter: HomeListAdapter
+    private lateinit var homeAdapter: HomeListAdapter
 //    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,15 +42,19 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
 
         val recyclerView: RecyclerView = binding.recyclerview
-        val homeAdapter = HomeListAdapter(requireContext())
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = homeAdapter.withLoadStateFooter(
-            footer = HomeLoadStateAdapter {
-                homeAdapter.retry()
-            }
-        )
 
-        var swipeRefreshLayout = binding.swipeRefreshLayout
+        context?.let {
+            homeAdapter = HomeListAdapter(it)
+            recyclerView.adapter = homeAdapter.withLoadStateFooter(
+                footer = HomeLoadStateAdapter {
+                    homeAdapter.retry()
+                }
+            )
+        }
+
+
+        val swipeRefreshLayout = binding.swipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener {
             homeAdapter.refresh()
         }
