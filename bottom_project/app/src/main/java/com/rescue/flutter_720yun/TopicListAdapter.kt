@@ -10,12 +10,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rescue.flutter_720yun.models.homemodel.HomeListModel
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.widget.Button
 import android.widget.ProgressBar
+import androidx.core.view.isGone
+import androidx.core.view.setMargins
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.rescue.flutter_720yun.models.homemodel.TagInfoModel
 
 //class TopicListAdapter(private val context: Context, private val list: List<HomeListModel>): RecyclerView.Adapter<TopicListAdapter.ViewHolder>() {
 //    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -78,6 +84,8 @@ class HomeListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val name: TextView = view.findViewById<TextView>(R.id.nick_name)
     private val imgView: ImageView = view.findViewById<ImageView>(R.id.head_img)
     private val content: TextView = view.findViewById<TextView>(R.id.content)
+    private val tag_info: RecyclerView = view.findViewById(R.id.tag_info)
+
     fun bind(context: Context, item: HomeListModel?) {
         name.text = item?.userInfo?.username
         name.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
@@ -91,6 +99,18 @@ class HomeListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         imgView.scaleType = ImageView.ScaleType.CENTER_CROP
         content.text = item?.content
+
+        if (item?.tagInfos?.isNotEmpty() == true) {
+            tag_info.visibility = View.VISIBLE
+            tag_info.adapter = item?.tagInfos?.let { TagInfoAdapter(it) }
+            tag_info.layoutManager = LinearLayoutManager(context)
+            val paddingTop = 26 * context.resources.displayMetrics.density
+            content.setPadding(0, paddingTop.toInt(), 0, 0)
+        }else{
+            tag_info.visibility = View.GONE
+            content.setPadding(0, 0, 0, 0)
+        }
+
     }
 }
 
@@ -139,5 +159,35 @@ class HomeLoadStateViewHolder(view: View, retry: () ->Unit): RecyclerView.ViewHo
                 retryButton.visibility = View.GONE
             }
         }
+    }
+}
+
+
+class TagInfoAdapter(private val tagList: List<TagInfoModel>): RecyclerView.Adapter<TagInfoAdapter.ViewHandler>() {
+
+    inner class ViewHandler(view: View): RecyclerView.ViewHolder(view) {
+        val tagText: TextView = view.findViewById<TextView>(R.id.tag_text)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHandler {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.tag_item, parent, false)
+        return ViewHandler(view)
+    }
+
+    override fun getItemCount(): Int {
+        return tagList.size
+    }
+
+    override fun onBindViewHolder(holder: ViewHandler, position: Int) {
+        val value = tagList[position]
+        holder.tagText.text = value.tag_name
+        val background = GradientDrawable()
+// 设置背景颜色
+        background.setColor(Color.parseColor("#EEEEEE"))
+        // 设置圆角半径（dp转px）
+        val cornerRadius: Float = 5F
+        background.cornerRadius = cornerRadius
+// 将这个背景应用到TextView
+        holder.tagText.background = background
     }
 }
