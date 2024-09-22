@@ -1,4 +1,5 @@
 package com.rescue.flutter_720yun.ui.home
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.rescue.flutter_720yun.network.AppService
@@ -15,6 +16,7 @@ class HomePagingSource(
             val currentPage = params.key ?: 1
             // 从 API 获取数据
             val response = apiService.getTopicList(currentPage, 10, 0).awaitResponse()
+            Log.d("TAG", response.data.toString())
             // 获取响应数据列表
             val items = response.data
             LoadResult.Page(

@@ -112,11 +112,25 @@
 <!--        android:background="@drawable/rounded_background"-->
 <!--        />-->
 
+    <TextView
+        android:id="@+id/time_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="12sp"
+        android:textColor="@color/color_desc"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_back"
+        android:layout_marginStart="65dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="6dp"
+        />
+
     <LinearLayout
         android:id="@+id/linear_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/img_back"
+        android:layout_height="30dp"
+        app:layout_constraintTop_toBottomOf="@id/time_text"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginStart="65dp"
@@ -126,25 +140,54 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:id="@+id/like_button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="点赞"/>
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:icon="@drawable/icon_zan_un"
+            app:iconTint="@null"
+            app:iconGravity="textStart"
+            app:iconPadding="3dp"
+            android:text="点赞"
+            android:textColor="@color/color_node"
+            android:backgroundTint="@android:color/transparent"
+            />
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:id="@+id/collect_button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="收藏"/>
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:icon="@drawable/icon_collection_un"
+            app:iconTint="@null"
+            app:iconGravity="textStart"
+            app:iconPadding="3dp"
+            android:text="收藏"
+            android:textColor="@color/color_node"
+
+            android:backgroundTint="@android:color/transparent"
+            />
+        <!--            style="@style/Widget.MaterialComponents.Button.TextButton"-->
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:id="@+id/comment_button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="评论"/>
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:icon="@drawable/icon_sh_commen"
+            app:iconTint="@null"
+            app:iconGravity="textStart"
+            app:iconPadding="3dp"
+            android:text="评论"
+            android:textColor="@color/color_node"
+            android:backgroundTint="@android:color/transparent"
+            />
     </LinearLayout>
 
     <View

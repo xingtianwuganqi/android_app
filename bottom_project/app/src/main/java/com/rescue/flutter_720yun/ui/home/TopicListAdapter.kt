@@ -1,20 +1,15 @@
 package com.rescue.flutter_720yun.ui.home
 
 
+import android.content.Context
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.rescue.flutter_720yun.models.HomeListModel
-import android.content.Context
-import android.graphics.Color
-import android.graphics.Rect
-import android.graphics.drawable.GradientDrawable
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
@@ -22,10 +17,15 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.rescue.flutter_720yun.BaseApplication
 import com.rescue.flutter_720yun.R
+import com.rescue.flutter_720yun.models.HomeListModel
 import com.rescue.flutter_720yun.models.TagInfoModel
-import com.rescue.flutter_720yun.util.dpToPx
+import com.rescue.flutter_720yun.util.getImages
+import com.rescue.flutter_720yun.util.timeToStr
+import com.rescue.flutter_720yun.util.toImgUrl
 
 //class TopicListAdapter(private val context: Context, private val list: List<HomeListModel>): RecyclerView.Adapter<TopicListAdapter.ViewHolder>() {
 //    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -90,14 +90,15 @@ class HomeListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val name: TextView = view.findViewById<TextView>(R.id.nick_name)
     private val imgView: ImageView = view.findViewById<ImageView>(R.id.head_img)
     private val content: TextView = view.findViewById<TextView>(R.id.content)
+    private val timeText: TextView = view.findViewById(R.id.time_text)
     private val tagInfo: RecyclerView = view.findViewById(R.id.tag_info)
     private val imgRecyclerView: RecyclerView = view.findViewById(R.id.img_recyclerview)
 
     fun bind(context: Context, item: HomeListModel?) {
         name.text = item?.userInfo?.username
         name.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-        item?.userInfo?.avator.let {
-            val imgStr = "http://img.rxswift.cn/${it}"
+        item?.userInfo?.avator?.let {
+            val imgStr = it.toImgUrl()
             Glide.with(context)
                 .load(imgStr)
                 .placeholder(R.drawable.icon_eee)
@@ -106,6 +107,7 @@ class HomeListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         imgView.scaleType = ImageView.ScaleType.CENTER_CROP
         content.text = item?.content
+        timeText.text = item?.create_time?.timeToStr()
 
         if (item?.tagInfos?.isNotEmpty() == true) {
             tagInfo.visibility = View.VISIBLE
@@ -119,9 +121,9 @@ class HomeListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
 
         // 设置
-        if ((item?.imgs?.size ?: 0) > 1) {
+        if ((item?.getImages()?.size ?: 0) > 1) {
             imgRecyclerView.layoutManager = GridLayoutManager(context, 2)
-            val images = item?.imgs?.slice(0..1) ?: listOf("", "")
+            val images = item?.getImages()?.slice(0..1) ?: listOf("", "")
             imgRecyclerView.adapter = TopicImgAdapter(images)
         }else{
             imgRecyclerView.layoutManager = GridLayoutManager(context, 1)
@@ -208,36 +210,3 @@ class TagInfoAdapter(private val tagList: List<TagInfoModel>): RecyclerView.Adap
     }
 }
 
-class TopicImgAdapter(private val imgStr: List<String>): RecyclerView.Adapter<TopicImgAdapter.ViewHolder>() {
-    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val imgView: ImageView = view.findViewById(R.id.topic_img)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.topic_img_item, parent, false)
-        return ViewHolder(view)
-    }
-
-    override fun getItemCount(): Int {
-        return imgStr.size
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val imgUrl = imgStr[position]
-        Glide.with(BaseApplication.context)
-            .load(imgUrl)
-            .placeholder(R.drawable.icon_eee)
-            .into(holder.imgView)
-        if (imgStr.size > 1) {
-            if (position == 0) {
-                val layoutParams = holder.imgView.layoutParams as ViewGroup.MarginLayoutParams
-                layoutParams.setMargins(0, 0, 2.dpToPx(), 0)
-                holder.imgView.layoutParams = layoutParams
-            }else{
-                val layoutParams = holder.imgView.layoutParams as ViewGroup.MarginLayoutParams
-                layoutParams.setMargins(2.dpToPx(), 0, 0, 0)
-                holder.imgView.layoutParams = layoutParams
-            }
-        }
-    }
-}
