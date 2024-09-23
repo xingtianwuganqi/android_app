@@ -1,4 +1,4 @@
-package com.rescue.flutter_720yun.ui.home
+package com.rescue.flutter_720yun.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,6 +7,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.rescue.flutter_720yun.network.AppService
 import com.rescue.flutter_720yun.network.ServiceCreator
+import com.rescue.flutter_720yun.ui.home.HomePagingSource
 
 class HomeViewModel : ViewModel() {
 

@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.roundedimageview)
     implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.viewpager2.viewpager2) // ViewPager2
 //    implementation(libs.kotlinx.coroutines.core)
 //    implementation(libs.kotlinx.coroutines.android)
 //    implementation(libs.androidx.swiperefreshlayout) // SwipeRefreshLayout

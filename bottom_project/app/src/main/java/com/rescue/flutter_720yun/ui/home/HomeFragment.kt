@@ -12,6 +12,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rescue.flutter_720yun.databinding.FragmentHomeBinding
+import com.rescue.flutter_720yun.viewmodels.HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -19,13 +20,8 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
-//    private val httpApi = OkHttpApi()
-//    private lateinit var adapter: TopicListAdapter
     private lateinit var homeAdapter: HomeListAdapter
-//    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -78,14 +74,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-
-//        homeViewModel.models.observe(viewLifecycleOwner, Observer {
-//            context?.let { it1 ->
-//                adapter = TopicListAdapter(it1, it)
-//                recyclerView.adapter = adapter
-//            }
-//        })
-//        homeViewModel.fetchData(true)
         return root
     }
 
