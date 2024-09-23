@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.rescue.flutter_720yun.ui.home.HomeFragment"
+        android:name="com.rescue.flutter_720yun.fragment.HomeLayoutFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home_layout" />
 
     <fragment
         android:id="@+id/navigation_dashboard"

@@ -13,18 +13,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tabMode="scrollable">
-
-<!--        <com.google.android.material.tabs.TabItem-->
-<!--            android:text="Tab 1" />-->
-<!--        <com.google.android.material.tabs.TabItem-->
-<!--            android:text="Tab 2" />-->
-<!--        <com.google.android.material.tabs.TabItem-->
-<!--            android:text="Tab 3" />-->
-
+        app:tabMode="scrollable"
+        app:tabGravity="fill"
+        app:tabTextAppearance="@style/CustomTabTextAppearance"
+        app:tabSelectedTextColor="@color/color_title"
+        app:tabTextColor="@color/color_node"
+        app:tabIndicatorColor="@color/color_system"
+        app:tabIndicatorHeight="3dp"
+        >
     </com.google.android.material.tabs.TabLayout>
 
-    <androidx.viewpager.widget.ViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
