@@ -1,5 +1,7 @@
 package com.rescue.flutter_720yun
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -9,12 +11,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.rescue.flutter_720yun.databinding.ActivityMainBinding
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 class MainActivity : AppCompatActivity() {
@@ -42,6 +38,16 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+//        navController.addOnDestinationChangedListener { _, destination, _ ->
+//            when (destination.id) {
+//                R.id.home_toolbar -> {
+//                    supportActionBar?.title = "Fragment A Title"
+//                    supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.BLUE)) // 更改背景色
+//                }
+//                // 其他 Fragment 的样式设置
+//            }
+//        }
 
     }
 
