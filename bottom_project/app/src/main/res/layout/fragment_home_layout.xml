@@ -6,15 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/home_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:background="@color/white"/>
-
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="0dp"
@@ -29,6 +20,7 @@
         app:tabTextColor="@color/color_node"
         app:tabIndicatorColor="@color/color_system"
         app:tabIndicatorHeight="3dp"
+        app:tabRippleColor="@android:color/transparent"
         >
     </com.google.android.material.tabs.TabLayout>
 

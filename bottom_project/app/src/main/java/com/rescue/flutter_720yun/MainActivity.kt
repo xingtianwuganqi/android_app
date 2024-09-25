@@ -2,8 +2,10 @@ package com.rescue.flutter_720yun
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -39,15 +41,21 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-//        navController.addOnDestinationChangedListener { _, destination, _ ->
-//            when (destination.id) {
-//                R.id.home_toolbar -> {
-//                    supportActionBar?.title = "Fragment A Title"
-//                    supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.BLUE)) // 更改背景色
-//                }
-//                // 其他 Fragment 的样式设置
-//            }
-//        }
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            val searchBtn = binding.searchButton
+            when (destination.id) {
+                R.id.navigation_home -> {
+                    supportActionBar?.title = "首页"
+                    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                    supportActionBar?.setHomeAsUpIndicator(R.drawable.icon_draw_more)
+                    searchBtn.visibility = View.VISIBLE
+                }else -> {
+                    supportActionBar?.title = ""
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                    searchBtn.visibility = View.GONE
+                }
+            }
+        }
 
     }
 
