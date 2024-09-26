@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingDataAdapter
@@ -26,37 +27,6 @@ import com.rescue.flutter_720yun.models.TagInfoModel
 import com.rescue.flutter_720yun.util.getImages
 import com.rescue.flutter_720yun.util.timeToStr
 import com.rescue.flutter_720yun.util.toImgUrl
-
-//class TopicListAdapter(private val context: Context, private val list: List<HomeListModel>): RecyclerView.Adapter<TopicListAdapter.ViewHolder>() {
-//    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-//        val name = view.findViewById<TextView>(R.id.nick_name)
-//        var imgView = view.findViewById<ImageView>(R.id.head_img)
-//        val content = view.findViewById<TextView>(R.id.content)
-//    }
-//
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-//        val view = LayoutInflater.from(parent.context)
-//            .inflate(R.layout.home_item, parent, false)
-//        return ViewHolder(view)
-//    }
-//
-//    override fun getItemCount(): Int {
-//       return list.size
-//    }
-//
-//    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-//        val item = list[position]
-//        holder.name.text = item.userInfo.username
-//        holder.name.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-//        val imgStr = "http://img.rxswift.cn/${item.userInfo.avator}"
-//        Glide.with(context)
-//            .load(imgStr)
-//            .placeholder(R.drawable.icon_eee)
-//            .into(holder.imgView)
-//        holder.imgView.scaleType = ImageView.ScaleType.CENTER_CROP
-//        holder.content.text = item.content
-//    }
-//}
 
 class HomeListAdapter(private val context: Context): PagingDataAdapter<HomeListModel, HomeListViewHolder>(
     DiffCallback
@@ -132,9 +102,31 @@ class HomeListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     }
 }
 
-class HomeLoadStateAdapter(
-    private val retry: () -> Unit
-): LoadStateAdapter<HomeLoadStateViewHolder>() {
+class HomeLoadStateAdapter: LoadStateAdapter<HomeLoadStateViewHolder>() {
+
+    //记录列表adapter的loadState
+    private var outLoadStates : CombinedLoadStates? = null
+    //记录自身是否被添加进RecycleView
+    var hasInserted = false
+
+    init {
+        //注册监听，记录是否被添加
+        registerAdapterDataObserver(
+            object : RecyclerView.AdapterDataObserver() {
+
+                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                    super.onItemRangeInserted(positionStart, itemCount)
+                    hasInserted = true
+                }
+
+                override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                    super.onItemRangeRemoved(positionStart, itemCount)
+                    hasInserted = false
+                }
+            }
+        )
+    }
+
     override fun onBindViewHolder(holder: HomeLoadStateViewHolder, loadState: LoadState) {
         holder.bind(loadState)
     }
@@ -144,14 +136,28 @@ class HomeLoadStateAdapter(
         loadState: LoadState
     ): HomeLoadStateViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.load_state_view, parent, false)
-        return HomeLoadStateViewHolder(view, retry)
+        return HomeLoadStateViewHolder(view)
+    }
+
+    override fun displayLoadStateAsItem(loadState: LoadState): Boolean {
+//        return super.displayLoadStateAsItem(loadState)
+//        return true
+        //原有逻辑，loading和error状态下显示footer
+        val resultA = loadState is LoadState.Loading || loadState is LoadState.Error
+        //新增逻辑，refresh状态为NotLoading之后，NotLoading再显示footer
+        val resultB = (loadState is LoadState.NotLoading && outLoadStates?.refresh is LoadState.NotLoading)
+        val result  = resultA || resultB
+        if (result && !hasInserted) {
+            notifyItemInserted(0)
+        }
+        return result
     }
 }
 
-class HomeLoadStateViewHolder(view: View, retry: () ->Unit): RecyclerView.ViewHolder(view) {
+class HomeLoadStateViewHolder(view: View): RecyclerView.ViewHolder(view) {
     val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
     val errorMessage = view.findViewById<TextView>(R.id.errorMessage)
-    val retryButton = view.findViewById<Button>(R.id.retryButton)
+//    val retryButton = view.findViewById<Button>(R.id.retryButton)
 
     fun bind(loadState: LoadState) {
         // 控制 ProgressBar 的可见性
@@ -159,22 +165,20 @@ class HomeLoadStateViewHolder(view: View, retry: () ->Unit): RecyclerView.ViewHo
             is LoadState.Loading -> {
                 // 显示加载中的 ProgressBar
                 progressBar.visibility = View.VISIBLE
-                errorMessage.visibility = View.GONE
-                retryButton.visibility = View.GONE
+                errorMessage.visibility = View.VISIBLE
+                errorMessage.text = "加载中..."
             }
             is LoadState.Error -> {
-                // 显示错误信息和重试按钮，隐藏 ProgressBar
                 progressBar.visibility = View.GONE
                 errorMessage.visibility = View.VISIBLE
-                retryButton.visibility = View.VISIBLE
                 // 显示具体的错误信息
                 errorMessage.text = loadState.error.localizedMessage
             }
             is LoadState.NotLoading -> {
                 // 隐藏所有状态视图
                 progressBar.visibility = View.GONE
-                errorMessage.visibility = View.GONE
-                retryButton.visibility = View.GONE
+                errorMessage.visibility = View.VISIBLE
+                errorMessage.text = "没有更多了"
             }
         }
     }

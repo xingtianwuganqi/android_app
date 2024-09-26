@@ -39,10 +39,10 @@ class HomeFragment : Fragment() {
         context?.let {
             homeAdapter = HomeListAdapter(it)
             recyclerView.adapter = homeAdapter.withLoadStateFooter(
-                footer = HomeLoadStateAdapter {
-                    homeAdapter.retry()
-                }
+                footer = HomeLoadStateAdapter()
             )
+
+
         }
 
 

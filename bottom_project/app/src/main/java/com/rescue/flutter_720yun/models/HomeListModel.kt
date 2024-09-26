@@ -25,7 +25,7 @@ data class UserInfo(
 data class TagInfoModel(
     val id: Int?,
     val tag_name: String?,
-    val tag_type: String?
+    val tag_type: Int?
 )
 
 data class HomeListModel (
