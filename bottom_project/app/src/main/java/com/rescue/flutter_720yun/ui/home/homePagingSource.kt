@@ -20,12 +20,12 @@ class HomePagingSource(
             val response = apiService.getTopicList(currentPage, 10, 0).awaitResponse()
             Log.d("TAG", response.data.toString())
             // 获取响应数据列表
-            val items = response.data
+            val items = response.data ?: emptyList()
 
             LoadResult.Page(
                 data = items,
                 prevKey = if (currentPage == 1) null else currentPage - 1,
-                nextKey = if (items.isEmpty()) null else currentPage + 1
+                nextKey = if (items?.isEmpty() == true) null else currentPage + 1
             )
 
         } catch (e: Exception) {

@@ -7,9 +7,15 @@ data class BaseResponse<T> (
 )
 
 data class BaseListResp<T> (
-    val code: Int,
-    val data: List<T>,
-    val message: String
+    val code: Int?,
+    val data: List<T>?,
+    val message: String?
+)
+
+data class HomeResponse (
+    val code: Int?,
+    val data: List<HomeListModel>?,
+    val message: String?
 )
 
 data class UserInfo(
