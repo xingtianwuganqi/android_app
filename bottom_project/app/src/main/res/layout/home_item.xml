@@ -25,6 +25,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:textSize="16sp"
+        android:textColor="@color/color_title"
         android:gravity="center_horizontal"
         android:layout_marginStart="10dp"
         app:layout_constraintHorizontal_weight="1"
@@ -69,8 +70,8 @@
         android:layout_marginTop="5dp"
         android:layout_marginStart="65dp"
         android:layout_marginEnd="15dp"
-        android:textColor="#333333"
-        android:textSize="16sp"
+        android:textColor="@color/color_content"
+        android:textSize="@dimen/content_font"
         />
 
     <androidx.cardview.widget.CardView
@@ -97,26 +98,11 @@
             />
     </androidx.cardview.widget.CardView>
 
-
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/img_recyclerview"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="120dp"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/content"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:layout_constraintRight_toRightOf="parent"-->
-<!--        android:layout_marginStart="65dp"-->
-<!--        android:layout_marginEnd="15dp"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:layout_marginBottom="10dp"-->
-<!--        android:background="@drawable/rounded_background"-->
-<!--        />-->
-
     <TextView
         android:id="@+id/time_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="12sp"
+        android:textSize="@dimen/address_font"
         android:textColor="@color/color_desc"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -149,6 +135,7 @@
             app:iconGravity="textStart"
             app:iconPadding="3dp"
             android:text="点赞"
+            android:textSize="@dimen/address_font"
             android:textColor="@color/color_node"
             android:backgroundTint="@android:color/transparent"
             />
@@ -167,7 +154,7 @@
             app:iconPadding="3dp"
             android:text="收藏"
             android:textColor="@color/color_node"
-
+            android:textSize="@dimen/address_font"
             android:backgroundTint="@android:color/transparent"
             />
         <!--            style="@style/Widget.MaterialComponents.Button.TextButton"-->
@@ -186,6 +173,7 @@
             app:iconPadding="3dp"
             android:text="评论"
             android:textColor="@color/color_node"
+            android:textSize="@dimen/address_font"
             android:backgroundTint="@android:color/transparent"
             />
     </LinearLayout>

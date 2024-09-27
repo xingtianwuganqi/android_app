@@ -1,5 +1,6 @@
 package com.rescue.flutter_720yun.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,12 +12,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.rescue.flutter_720yun.activity.LoginActivity
 import com.rescue.flutter_720yun.databinding.FragmentHomeBinding
+import com.rescue.flutter_720yun.models.HomeListModel
+import com.rescue.flutter_720yun.util.UserManager
 import com.rescue.flutter_720yun.viewmodels.HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), OnItemClickListener {
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -37,7 +41,7 @@ class HomeFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         context?.let {
-            homeAdapter = HomeListAdapter(it)
+            homeAdapter = HomeListAdapter(it, this)
             recyclerView.adapter = homeAdapter.withLoadStateFooter(
                 footer = HomeLoadStateAdapter()
             )
@@ -80,6 +84,45 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun userClick(model: HomeListModel?) {
+
+    }
+
+    override fun onItemClick(model: HomeListModel?) {
+
+    }
+
+    override fun onImgClick(model: HomeListModel?, position: Int) {
+
+    }
+
+    override fun likeActionClick(model: HomeListModel?) {
+        if (UserManager.isLogin) {
+
+        }else{
+            val intent = Intent(activity, LoginActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    override fun collectionClick(model: HomeListModel?) {
+        if (UserManager.isLogin) {
+
+        }else{
+            val intent = Intent(activity, LoginActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    override fun commentClick(model: HomeListModel?) {
+        if (UserManager.isLogin) {
+
+        }else{
+            val intent = Intent(activity, LoginActivity::class.java)
+            startActivity(intent)
+        }
     }
 
 }

@@ -28,7 +28,17 @@ import com.rescue.flutter_720yun.util.getImages
 import com.rescue.flutter_720yun.util.timeToStr
 import com.rescue.flutter_720yun.util.toImgUrl
 
-class HomeListAdapter(private val context: Context): PagingDataAdapter<HomeListModel, HomeListViewHolder>(
+// 定义点击监听接口
+interface OnItemClickListener {
+    fun userClick(model: HomeListModel?)
+    fun onItemClick(model: HomeListModel?)
+    fun onImgClick(model: HomeListModel?, position: Int)
+    fun likeActionClick(model: HomeListModel?)
+    fun collectionClick(model: HomeListModel?)
+    fun commentClick(model: HomeListModel?)
+}
+
+class HomeListAdapter(private val context: Context, private val listener: OnItemClickListener): PagingDataAdapter<HomeListModel, HomeListViewHolder>(
     DiffCallback
 ) {
 
@@ -40,7 +50,7 @@ class HomeListAdapter(private val context: Context): PagingDataAdapter<HomeListM
 
     override fun onBindViewHolder(holder: HomeListViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(context, item)
+        holder.bind(context, item, listener)
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<HomeListModel>() {
@@ -58,13 +68,16 @@ class HomeListAdapter(private val context: Context): PagingDataAdapter<HomeListM
 
 class HomeListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val name: TextView = view.findViewById<TextView>(R.id.nick_name)
-    private val imgView: ImageView = view.findViewById<ImageView>(R.id.head_img)
-    private val content: TextView = view.findViewById<TextView>(R.id.content)
-    private val timeText: TextView = view.findViewById(R.id.time_text)
-    private val tagInfo: RecyclerView = view.findViewById(R.id.tag_info)
-    private val imgRecyclerView: RecyclerView = view.findViewById(R.id.img_recyclerview)
+    val imgView: ImageView = view.findViewById<ImageView>(R.id.head_img)
+    val content: TextView = view.findViewById<TextView>(R.id.content)
+    val timeText: TextView = view.findViewById(R.id.time_text)
+    val tagInfo: RecyclerView = view.findViewById(R.id.tag_info)
+    val imgRecyclerView: RecyclerView = view.findViewById(R.id.img_recyclerview)
+    val likeBtn: Button = view.findViewById(R.id.like_button)
+    val collection: Button = view.findViewById(R.id.collect_button)
+    val commentBtn: Button = view.findViewById(R.id.comment_button)
 
-    fun bind(context: Context, item: HomeListModel?) {
+    fun bind(context: Context, item: HomeListModel?, listener: OnItemClickListener) {
         name.text = item?.userInfo?.username
         name.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
         item?.userInfo?.avator?.let {
@@ -94,38 +107,85 @@ class HomeListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         if ((item?.getImages()?.size ?: 0) > 1) {
             imgRecyclerView.layoutManager = GridLayoutManager(context, 2)
             val images = item?.getImages()?.slice(0..1) ?: listOf("", "")
-            imgRecyclerView.adapter = TopicImgAdapter(images)
+            imgRecyclerView.adapter = TopicImgAdapter(images, object : TopicImgAdapter.OnChildItemClickListener{
+                override fun onChildItemClick(position: Int) {
+                    listener.onImgClick(item, position)
+                }
+            })
         }else{
             imgRecyclerView.layoutManager = GridLayoutManager(context, 1)
-            imgRecyclerView.adapter = TopicImgAdapter(item?.imgs ?: listOf(""))
+            imgRecyclerView.adapter = TopicImgAdapter(item?.imgs ?: listOf(""), object : TopicImgAdapter.OnChildItemClickListener{
+                override fun onChildItemClick(position: Int) {
+                    listener.onImgClick(item, position)
+                }
+            })
         }
+
+        if (item?.liked == true) {
+            likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_zan_se, 0, 0, 0)
+        }else{
+            likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_zan_un, 0, 0, 0)
+        }
+
+
+        if (item?.collectioned == true) {
+            likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_collection_se, 0, 0, 0)
+        }else{
+            likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_collection_un, 0, 0, 0)
+        }
+
+
+        name.setOnClickListener{
+            listener.userClick(item)
+        }
+
+        imgView.setOnClickListener{
+            listener.userClick(item)
+        }
+
+        content.setOnClickListener{
+            listener.onItemClick(item)
+        }
+
+        likeBtn.setOnClickListener{
+            listener.likeActionClick(item)
+        }
+
+        collection.setOnClickListener {
+            listener.collectionClick(item)
+        }
+
+        commentBtn.setOnClickListener {
+            listener.commentClick(item)
+        }
+
     }
 }
 
 class HomeLoadStateAdapter: LoadStateAdapter<HomeLoadStateViewHolder>() {
 
-    //记录列表adapter的loadState
-    private var outLoadStates : CombinedLoadStates? = null
-    //记录自身是否被添加进RecycleView
-    var hasInserted = false
-
-    init {
-        //注册监听，记录是否被添加
-        registerAdapterDataObserver(
-            object : RecyclerView.AdapterDataObserver() {
-
-                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                    super.onItemRangeInserted(positionStart, itemCount)
-                    hasInserted = true
-                }
-
-                override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-                    super.onItemRangeRemoved(positionStart, itemCount)
-                    hasInserted = false
-                }
-            }
-        )
-    }
+//    //记录列表adapter的loadState
+//    private var outLoadStates : CombinedLoadStates? = null
+//    //记录自身是否被添加进RecycleView
+//    var hasInserted = false
+//
+//    init {
+//        //注册监听，记录是否被添加
+//        registerAdapterDataObserver(
+//            object : RecyclerView.AdapterDataObserver() {
+//
+//                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+//                    super.onItemRangeInserted(positionStart, itemCount)
+//                    hasInserted = true
+//                }
+//
+//                override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+//                    super.onItemRangeRemoved(positionStart, itemCount)
+//                    hasInserted = false
+//                }
+//            }
+//        )
+//    }
 
     override fun onBindViewHolder(holder: HomeLoadStateViewHolder, loadState: LoadState) {
         holder.bind(loadState)
@@ -140,24 +200,14 @@ class HomeLoadStateAdapter: LoadStateAdapter<HomeLoadStateViewHolder>() {
     }
 
     override fun displayLoadStateAsItem(loadState: LoadState): Boolean {
-//        return super.displayLoadStateAsItem(loadState)
-//        return true
-        //原有逻辑，loading和error状态下显示footer
-        val resultA = loadState is LoadState.Loading || loadState is LoadState.Error
-        //新增逻辑，refresh状态为NotLoading之后，NotLoading再显示footer
-        val resultB = (loadState is LoadState.NotLoading && outLoadStates?.refresh is LoadState.NotLoading)
-        val result  = resultA || resultB
-        if (result && !hasInserted) {
-            notifyItemInserted(0)
-        }
-        return result
+        super.displayLoadStateAsItem(loadState)
+        return true
     }
 }
 
 class HomeLoadStateViewHolder(view: View): RecyclerView.ViewHolder(view) {
     val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
     val errorMessage = view.findViewById<TextView>(R.id.errorMessage)
-//    val retryButton = view.findViewById<Button>(R.id.retryButton)
 
     fun bind(loadState: LoadState) {
         // 控制 ProgressBar 的可见性
@@ -172,7 +222,7 @@ class HomeLoadStateViewHolder(view: View): RecyclerView.ViewHolder(view) {
                 progressBar.visibility = View.GONE
                 errorMessage.visibility = View.VISIBLE
                 // 显示具体的错误信息
-                errorMessage.text = loadState.error.localizedMessage
+                errorMessage.text = "加载出错"
             }
             is LoadState.NotLoading -> {
                 // 隐藏所有状态视图

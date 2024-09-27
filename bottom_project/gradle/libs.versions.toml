@@ -29,6 +29,8 @@ uiAndroid = "1.7.1"
 uiDesktop = "1.7.0"
 uiJvmstubs = "1.7.1"
 leanback = "1.0.0"
+annotation = "1.6.0"
+activity = "1.8.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -59,6 +61,8 @@ androidx-leanback = { group = "androidx.leanback", name = "leanback", version.re
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 roundedimageview = { module = "com.makeramen:roundedimageview", version.ref = "roundedimageview" }
+androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

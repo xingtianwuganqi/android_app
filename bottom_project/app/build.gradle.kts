@@ -54,6 +54,8 @@ dependencies {
 //    implementation(libs.androidx.ui.desktop)
 //    implementation(libs.androidx.ui.jvmstubs)
     implementation(libs.androidx.leanback)
+    implementation(libs.androidx.annotation)
+    implementation(libs.androidx.activity)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

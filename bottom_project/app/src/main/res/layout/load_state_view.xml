@@ -6,27 +6,18 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Progress Bar (When loading more data) -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"/>
 
-    <!-- Error Text (Shown when an error occurs during data loading) -->
     <TextView
         android:id="@+id/errorMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Error occurred"
-        android:textColor="@android:color/holo_red_dark"
-        android:visibility="gone"/>
+        android:textSize="12sp"
+        android:textColor="@color/color_desc"
+        android:visibility="gone" />
 
-    <!-- Retry Button (Shown when there's an error and allows retry) -->
-<!--    <Button-->
-<!--        android:id="@+id/retryButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Retry"-->
-<!--        android:visibility="gone"/>-->
 </LinearLayout>

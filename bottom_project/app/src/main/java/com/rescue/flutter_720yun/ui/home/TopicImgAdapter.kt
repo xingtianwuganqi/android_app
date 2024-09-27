@@ -11,7 +11,13 @@ import com.rescue.flutter_720yun.R
 import com.rescue.flutter_720yun.util.dpToPx
 import com.rescue.flutter_720yun.util.toImgUrl
 
-class TopicImgAdapter(private val imgStr: List<String>): RecyclerView.Adapter<TopicImgAdapter.ViewHolder>() {
+class TopicImgAdapter(
+    private val imgStr: List<String>,
+    private val listener: OnChildItemClickListener
+    ): RecyclerView.Adapter<TopicImgAdapter.ViewHolder>() {
+    interface OnChildItemClickListener  {
+        fun onChildItemClick(position: Int)
+    }
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val imgView: ImageView = view.findViewById(R.id.topic_img)
     }
@@ -42,6 +48,10 @@ class TopicImgAdapter(private val imgStr: List<String>): RecyclerView.Adapter<To
                 layoutParams.setMargins(2.dpToPx(), 0, 0, 0)
                 holder.imgView.layoutParams = layoutParams
             }
+        }
+
+        holder.imgView.setOnClickListener{
+            listener.onChildItemClick(position)
         }
     }
 }
