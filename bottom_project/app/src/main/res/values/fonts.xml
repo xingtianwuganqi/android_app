@@ -5,5 +5,5 @@
     <dimen name="content_font">16sp</dimen>
     <dimen name="address_font">14sp</dimen>
     <dimen name="desc_font">12sp</dimen>
-    <dimen name="small_font">12sp</dimen>
+    <dimen name="small_font">10sp</dimen>
 </resources>

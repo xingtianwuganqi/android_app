@@ -3,6 +3,7 @@ package com.rescue.flutter_720yun.network
 import com.rescue.flutter_720yun.models.BaseListResp
 import com.rescue.flutter_720yun.models.BaseResponse
 import com.rescue.flutter_720yun.models.HomeListModel
+import com.rescue.flutter_720yun.models.UserInfo
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Field
@@ -11,18 +12,17 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface AppService {
-//    @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("api/v1/topiclist/")
-    fun getTopicList(@Field("page") page: Int, @Field("size") size: Int,@Field("order") order: Int): Call<BaseResponse<Any>>
+    fun getTopicList(@Field("page") page: Int,
+                     @Field("size") size: Int,
+                     @Field("order") order: Int
+    ): Call<BaseResponse<Any>>
 
-    @GET("repos/square/okhttp/issues")
-    fun getIssuesList(): Call<ResponseBody>
-
-    @POST("v1/test/post/test")
-    fun postTest(): Call<ResponseBody>
+    @FormUrlEncoded
+    @POST("api/v1/login/")
+    fun login(@Field("phoneNum") phone: String,
+              @Field("password") password: String,
+              @Field("phone_type") type: String = "android"
+    ): Call<BaseResponse<UserInfo>>
 }
-
-data class App(val code: Int, val message: String)
-
-data class Data(val page: Int, val size: Int,val order: Int)

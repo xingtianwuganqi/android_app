@@ -87,7 +87,6 @@ class HomeListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                 .placeholder(R.drawable.icon_eee)
                 .into(imgView)
         }
-
         imgView.scaleType = ImageView.ScaleType.CENTER_CROP
         content.text = item?.content
         timeText.text = item?.create_time?.timeToStr()
@@ -164,29 +163,6 @@ class HomeListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
 class HomeLoadStateAdapter: LoadStateAdapter<HomeLoadStateViewHolder>() {
 
-//    //记录列表adapter的loadState
-//    private var outLoadStates : CombinedLoadStates? = null
-//    //记录自身是否被添加进RecycleView
-//    var hasInserted = false
-//
-//    init {
-//        //注册监听，记录是否被添加
-//        registerAdapterDataObserver(
-//            object : RecyclerView.AdapterDataObserver() {
-//
-//                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-//                    super.onItemRangeInserted(positionStart, itemCount)
-//                    hasInserted = true
-//                }
-//
-//                override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-//                    super.onItemRangeRemoved(positionStart, itemCount)
-//                    hasInserted = false
-//                }
-//            }
-//        )
-//    }
-
     override fun onBindViewHolder(holder: HomeLoadStateViewHolder, loadState: LoadState) {
         holder.bind(loadState)
     }
@@ -197,11 +173,6 @@ class HomeLoadStateAdapter: LoadStateAdapter<HomeLoadStateViewHolder>() {
     ): HomeLoadStateViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.load_state_view, parent, false)
         return HomeLoadStateViewHolder(view)
-    }
-
-    override fun displayLoadStateAsItem(loadState: LoadState): Boolean {
-        super.displayLoadStateAsItem(loadState)
-        return true
     }
 }
 

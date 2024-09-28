@@ -1,9 +1,10 @@
 package com.rescue.flutter_720yun.util
 
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.rescue.flutter_720yun.BaseApplication
 import com.rescue.flutter_720yun.models.HomeListModel
+import java.security.MessageDigest
+import java.util.Locale
 
 // Int Extension
 fun Int.dpToPx(): Int {
@@ -15,6 +16,12 @@ fun Int.dpToPx(): Int {
 fun String.timeToStr(): String {
     val newText = this.split(".").first()
     return newText.replace("T", " ")
+}
+
+fun String.toMD5(): String {
+    val md = MessageDigest.getInstance("MD5")
+    val digest = md.digest(this.toByteArray())
+    return digest.joinToString("") { "%02x".format(it) }.uppercase(Locale.ROOT) // 转换为大写
 }
 
 fun String.toImgUrl(): String {

@@ -14,10 +14,6 @@ import com.rescue.flutter_720yun.databinding.FragmentHomeLayoutBinding
 class HomeLayoutFragment : Fragment() {
     private var _binding: FragmentHomeLayoutBinding? = null
     private val binding get() = _binding!!
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,8 +33,8 @@ class HomeLayoutFragment : Fragment() {
             viewPager
         ) { tab, position ->
             when(position) {
-                0 -> tab.text = "首页"
-                1 -> tab.text = "推荐"
+                0 -> tab.text = "推荐"
+                1 -> tab.text = "同城"
                 3 -> tab.text = "找宠"
             }
         }.attach()
@@ -48,12 +44,6 @@ class HomeLayoutFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        val toolbar = binding.homeToolbar
-//        (activity as AppCompatActivity).setSupportActionBar(toolbar)
-//
-//        // 设置标题和返回按钮
-//        (activity as AppCompatActivity).supportActionBar?.title = "Fragment Title"
-//        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
     }
 
