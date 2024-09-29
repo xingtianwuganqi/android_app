@@ -18,6 +18,9 @@ class LoginViewModel: ViewModel() {
     private val _loginStatus = MutableLiveData<BaseResponse<UserInfo>?>()
     private val _agreementStatus = MutableLiveData(false)
     private val _showPasswordStatus = MutableLiveData(false)
+    private val _countDownNum = MutableLiveData(60)
+    private val _isCountDowning = MutableLiveData(false)
+
     val loginStatus: LiveData<BaseResponse<UserInfo>?> get() = _loginStatus
     val agreement: LiveData<Boolean> get() = _agreementStatus
     val showPassword: LiveData<Boolean> get() = _showPasswordStatus
@@ -45,5 +48,18 @@ class LoginViewModel: ViewModel() {
 
     fun changeShowPasswordStatus(show: Boolean) {
         _showPasswordStatus.value = show
+    }
+
+    // 获取验证码
+    fun getCodeNetworking() {
+        if (_isCountDowning.value == true) {
+            return
+        }
+
+    }
+
+    // 倒计时
+    fun countDownAction() {
+
     }
 }

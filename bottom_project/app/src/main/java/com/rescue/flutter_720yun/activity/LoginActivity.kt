@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
 import android.view.inputmethod.InputMethodManager
+import com.google.android.material.button.MaterialButton
 import com.rescue.flutter_720yun.BaseApplication
 
 
@@ -33,32 +34,44 @@ class LoginActivity : AppCompatActivity() {
     private var _binding: ActivityLoginBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: LoginViewModel
+    private var type: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+        // 获取页面类型
+        type = intent.getStringExtra("type")
 
+        // 返回按钮
         val backBtn = binding.backButton
         backBtn?.setOnClickListener {
             finish()
         }
 
+        // 去注册
         val registerBtn = binding.registerButton
         registerBtn?.setOnClickListener {
-            val register = Intent(this, RegisterActivity::class.java)
+            val register = Intent(this, LoginActivity::class.java)
+            register.putExtra("type", "registerCheckCode")
             startActivity(register)
         }
 
+        // 去找回密码
         val findBtn = binding.findPassword
         findBtn?.setOnClickListener {
-            val findPassword = Intent(this, FindPasswordActivity::class.java)
+            val findPassword = Intent(this, LoginActivity::class.java)
+            findPassword.putExtra("type", "findCheckCode")
             startActivity(findPassword)
         }
+
+        // 账号输入框
         val phoneTextField = binding.username
+        // 密码输入框
         val passwordTextField = binding.password
-        val loginBtn = binding.login
+        // 登录按钮
+        val loginBtn: MaterialButton = binding.login as MaterialButton
         loginBtn.setOnClickListener {
             if (phoneTextField.text.trim().isEmpty()) {
                 val msg = resources.getString(R.string.login_phone_placeholder)
@@ -83,6 +96,7 @@ class LoginActivity : AppCompatActivity() {
 
         }
 
+        // 展示密码按钮
         val showPassword = binding.showPassword
         showPassword?.setOnClickListener {
             if (viewModel.showPassword.value == false) {
@@ -93,6 +107,14 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        // 获取验证码
+        val getCodeBtn = binding.getCode
+        getCodeBtn?.setOnClickListener {
+
+        }
+
+        // 协议
+        val agreementLayout = binding.agreement
         val agreementBtn = binding.agreementBtn
         agreementBtn?.setOnClickListener {
             if (viewModel.agreement.value == true) {
@@ -102,6 +124,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        // viewModel
         viewModel.loginStatus.observe(this) {response ->
             response.let {
                 if (response?.code == 200) {
@@ -142,13 +165,40 @@ class LoginActivity : AppCompatActivity() {
             passwordTextField.clearFocus()
 
             // 关闭软键盘（可选）
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(phoneTextField.windowToken, 0)
             imm.hideSoftInputFromWindow(passwordTextField.windowToken, 0)
 
         }
 
+        // 设置富文本
         setProtocolText()
+
+        // 更新页面显示
+        // 更具type更新页面显示
+        when (type) {
+            "registerCheckCode", "findCheckCode" -> {
+                findBtn?.visibility = View.GONE
+                registerBtn?.visibility = View.GONE
+                agreementLayout?.visibility = View.GONE
+                loginBtn.text = resources.getText(R.string.login_check_code)
+            }
+
+            "findPassword" -> {
+                findBtn?.visibility = View.GONE
+                registerBtn?.visibility = View.GONE
+                agreementLayout?.visibility = View.GONE
+                loginBtn.text = resources.getText(R.string.login_find_password)
+
+            }
+
+            "register" -> {
+                findBtn?.visibility = View.GONE
+                registerBtn?.visibility = View.GONE
+                agreementLayout?.visibility = View.GONE
+                loginBtn.text = resources.getText(R.string.register_action)
+            }
+        }
     }
 
     private fun setProtocolText() {

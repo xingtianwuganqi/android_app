@@ -137,15 +137,30 @@
                 android:theme="@style/EditTextStyle"
                 app:layout_constraintEnd_toStartOf="@id/show_password"
                 app:layout_constraintStart_toEndOf="@id/login_pswd_img" />
-            <ImageButton
-                android:id="@+id/show_password"
+
+            <FrameLayout
+                android:id="@+id/password_end_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icon_eye_o"
-                android:contentDescription="@null"
-                android:background="@android:color/transparent"
-                android:padding="15dp"
-                />
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/show_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_eye_o"
+                    android:contentDescription="@null"
+                    android:background="@android:color/transparent"
+                    android:padding="15dp"
+                    />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/get_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_get_code"
+                    app:strokeColor="@color/color_eee"
+                    app:cornerRadius="5dp"
+                    />
+            </FrameLayout>
 
         </LinearLayout>
 
