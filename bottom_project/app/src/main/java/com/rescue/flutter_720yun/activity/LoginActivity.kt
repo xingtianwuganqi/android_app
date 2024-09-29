@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import com.google.android.material.button.MaterialButton
 import com.rescue.flutter_720yun.BaseApplication
 
@@ -34,15 +35,19 @@ class LoginActivity : AppCompatActivity() {
     private var _binding: ActivityLoginBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: LoginViewModel
-    private var type: String? = null
-
+    private var type: String = "login"
+    private var phoneNum: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
         // 获取页面类型
-        type = intent.getStringExtra("type")
+        type = intent.getStringExtra("type") ?: "login"
+
+        // 找回密码和注册才有phoneNum
+        phoneNum = intent.getStringExtra("phoneNum")
+
 
         // 返回按钮
         val backBtn = binding.backButton
@@ -53,49 +58,122 @@ class LoginActivity : AppCompatActivity() {
         // 去注册
         val registerBtn = binding.registerButton
         registerBtn?.setOnClickListener {
-            val register = Intent(this, LoginActivity::class.java)
-            register.putExtra("type", "registerCheckCode")
-            startActivity(register)
+            val registerCheck = Intent(this, LoginActivity::class.java)
+            registerCheck.putExtra("type", "registerCheckCode")
+            startActivity(registerCheck)
         }
 
         // 去找回密码
         val findBtn = binding.findPassword
         findBtn?.setOnClickListener {
-            val findPassword = Intent(this, LoginActivity::class.java)
-            findPassword.putExtra("type", "findCheckCode")
-            startActivity(findPassword)
+            val findPasswordCheck = Intent(this, LoginActivity::class.java)
+            findPasswordCheck.putExtra("type", "findCheckCode")
+            startActivity(findPasswordCheck)
         }
 
         // 账号输入框
         val phoneTextField = binding.username
         // 密码输入框
         val passwordTextField = binding.password
+
+        if (type == "register") {
+            phoneTextField.setText(phoneNum)
+        }
+
         // 登录按钮
         val loginBtn: MaterialButton = binding.login as MaterialButton
         loginBtn.setOnClickListener {
-            if (phoneTextField.text.trim().isEmpty()) {
-                val msg = resources.getString(R.string.login_phone_placeholder)
-                Toast.makeText(this,msg, Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            if (passwordTextField.text.trim().isEmpty()) {
-                val msg = resources.getString(R.string.login_password_placeholder)
-                Toast.makeText(this,msg, Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            if (type == "login") {
+                if (phoneTextField.text.trim().isEmpty()) {
+                    val msg = resources.getString(R.string.login_phone_placeholder)
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                if (passwordTextField.text.trim().isEmpty()) {
+                    val msg = resources.getString(R.string.login_password_placeholder)
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
 
-            if (viewModel.agreement.value == false) {
-                val msg = resources.getString(R.string.login_protocol)
-                Toast.makeText(this,msg, Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+                if (viewModel.agreement.value == false) {
+                    val msg = resources.getString(R.string.login_protocol)
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
 
-            lifecycleScope.launch {
-                viewModel.loginNetworking(phoneTextField.text.trim().toString(), passwordTextField.text.trim().toString())
+                lifecycleScope.launch {
+                    viewModel.loginNetworking(
+                        phoneTextField.text.trim().toString(),
+                        passwordTextField.text.trim().toString()
+                    )
+                }
+            }else if (type == "findCheckCode" || type == "registerCheckCode") {
+                if (phoneTextField.text.trim().isEmpty()) {
+                    val msg = resources.getString(R.string.login_phone_placeholder)
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                if (passwordTextField.text.trim().isEmpty()) {
+                    val msg = resources.getString(R.string.login_password_placeholder)
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                lifecycleScope.launch {
+                    viewModel.checkCodeNetworking(
+                        phoneTextField.text.trim().toString(),
+                        passwordTextField.text.trim().toString()
+                    )
+                }
+            }else if (type == "register"){
+                if (passwordTextField.text.trim().isEmpty()) {
+                    val msg = resources.getString(R.string.login_password_placeholder)
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                if (viewModel.agreement.value == false) {
+                    val msg = resources.getString(R.string.login_protocol)
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                lifecycleScope.launch {
+                    // 注册
+                    viewModel.register(
+                        phoneTextField.text.trim().toString(),
+                        passwordTextField.text.trim().toString()
+                    )
+                }
+            }else if (type == "findPassword") {
+                if (phoneTextField.text.trim().isEmpty()) {
+                    val msg = resources.getString(R.string.login_input_password)
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                if (passwordTextField.text.trim().isEmpty()) {
+                    val msg = resources.getString(R.string.login_input_password_again)
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                lifecycleScope.launch {
+                    // 设置新密码
+                    phoneNum?.let {
+                        viewModel.findPassword(it,
+                            phoneTextField.text.trim().toString(),
+                            passwordTextField.text.trim().toString()
+                        )
+                    }
+
+                }
             }
 
         }
 
+        // 展示
+        val passwordEndLayout = binding.passwordEndLayout
         // 展示密码按钮
         val showPassword = binding.showPassword
         showPassword?.setOnClickListener {
@@ -110,7 +188,14 @@ class LoginActivity : AppCompatActivity() {
         // 获取验证码
         val getCodeBtn = binding.getCode
         getCodeBtn?.setOnClickListener {
-
+            if (phoneTextField.text.trim().isEmpty()) {
+                val msg = resources.getString(R.string.login_phone_placeholder)
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            lifecycleScope.launch {
+                viewModel.getCodeNetworking(phoneTextField.text.trim().toString())
+            }
         }
 
         // 协议
@@ -158,6 +243,40 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        viewModel.checkCodeStatus.observe(this) {
+            if (it == true) {
+                if (type == "findCheckCode") {
+                    val register = Intent(this, LoginActivity::class.java)
+                    register.putExtra("type", "findPassword")
+                    register.putExtra("phoneNum", phoneTextField.text.trim().toString())
+                    startActivity(register)
+
+                }else if (type == "registerCheckCode"){
+                    val register = Intent(this, LoginActivity::class.java)
+                    register.putExtra("type", "register")
+                    register.putExtra("phoneNum", phoneTextField.text.trim().toString())
+                    startActivity(register)
+                }
+                viewModel.cleanCheckStatus()
+            }else if (it == false){
+                val msg = resources.getString(R.string.check_code_fail)
+                Toast.makeText(this,msg, Toast.LENGTH_SHORT).show()
+                viewModel.cleanCheckStatus()
+            }
+        }
+
+        viewModel.findPasswordStatus.observe(this) {
+            if (it == true) {
+                val msg = resources.getString(R.string.uploadPasswordSucc)
+                Toast.makeText(this,msg, Toast.LENGTH_SHORT).show()
+                viewModel.cleanFindPasswordStatus()
+            }else if (it == false){
+                val msg = resources.getString(R.string.uploadPasswordFail)
+                Toast.makeText(this,msg, Toast.LENGTH_SHORT).show()
+                viewModel.cleanFindPasswordStatus()
+            }
+        }
+
         // 点击背景取消输入框第一响应者
         val bgContainer = binding.container
         bgContainer.setOnClickListener {
@@ -177,11 +296,25 @@ class LoginActivity : AppCompatActivity() {
         // 更新页面显示
         // 更具type更新页面显示
         when (type) {
+            "login" -> {
+                findBtn?.visibility = View.VISIBLE
+                registerBtn?.visibility = View.VISIBLE
+                agreementLayout?.visibility = View.VISIBLE
+                loginBtn.text = resources.getText(R.string.login_action)
+                getCodeBtn?.visibility = View.GONE
+                showPassword?.visibility = View.VISIBLE
+            }
             "registerCheckCode", "findCheckCode" -> {
                 findBtn?.visibility = View.GONE
                 registerBtn?.visibility = View.GONE
                 agreementLayout?.visibility = View.GONE
+
+                passwordTextField.hint = resources.getText(R.string.register_input_code)
+                passwordTextField.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 loginBtn.text = resources.getText(R.string.login_check_code)
+
+                getCodeBtn?.visibility = View.VISIBLE
+                showPassword?.visibility = View.GONE
             }
 
             "findPassword" -> {
@@ -189,7 +322,12 @@ class LoginActivity : AppCompatActivity() {
                 registerBtn?.visibility = View.GONE
                 agreementLayout?.visibility = View.GONE
                 loginBtn.text = resources.getText(R.string.login_find_password)
+                showPassword?.visibility = View.VISIBLE
+                getCodeBtn?.visibility = View.GONE
 
+                phoneTextField.hint = resources.getText(R.string.login_input_password)
+                passwordTextField.hint = resources.getText(R.string.login_input_password_again)
+                passwordTextField.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
             }
 
             "register" -> {
@@ -197,6 +335,10 @@ class LoginActivity : AppCompatActivity() {
                 registerBtn?.visibility = View.GONE
                 agreementLayout?.visibility = View.GONE
                 loginBtn.text = resources.getText(R.string.register_action)
+                showPassword?.visibility = View.VISIBLE
+                getCodeBtn?.visibility = View.GONE
+                phoneTextField.hint = resources.getText(R.string.login_input_password)
+                passwordTextField.hint = resources.getText(R.string.login_input_password_again)
             }
         }
     }
@@ -229,12 +371,6 @@ class LoginActivity : AppCompatActivity() {
                 length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             ) // 设置字体大小
-//            setSpan(
-//                ContextCompat.getColor(BaseApplication.context, R.color.color_system),
-//                0,
-//                length,
-//                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-//            )
             setSpan(object : ClickableSpan() {
                 override fun onClick(widget: View) {
                     // 点击事件处理
@@ -254,12 +390,6 @@ class LoginActivity : AppCompatActivity() {
                 0,
                 length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // 设置字体大小
-//            setSpan(ForegroundColorSpan(
-//                ContextCompat.getColor(BaseApplication.context, R.color.color_system)),
-//                0,
-//                length,
-//                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-//            )
             setSpan(object : ClickableSpan() {
                 override fun onClick(widget: View) {
                     // 点击事件处理
