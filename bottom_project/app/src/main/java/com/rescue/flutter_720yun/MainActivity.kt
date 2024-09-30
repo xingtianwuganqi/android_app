@@ -13,6 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.rescue.flutter_720yun.databinding.ActivityMainBinding
+import com.rescue.flutter_720yun.util.UserManager
 
 
 class MainActivity : AppCompatActivity() {
@@ -56,7 +57,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
+        // 获取个人信息
+        UserManager.getUserInfo()
     }
 
 }

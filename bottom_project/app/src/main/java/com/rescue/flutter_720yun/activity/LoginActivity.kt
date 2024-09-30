@@ -25,10 +25,14 @@ import com.rescue.flutter_720yun.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
 import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.compose.ui.text.toLowerCase
 import com.google.android.material.button.MaterialButton
 import com.rescue.flutter_720yun.BaseApplication
+import java.util.Locale
+import kotlin.math.log
 
 
 class LoginActivity : AppCompatActivity() {
@@ -188,13 +192,30 @@ class LoginActivity : AppCompatActivity() {
         // 获取验证码
         val getCodeBtn = binding.getCode
         getCodeBtn?.setOnClickListener {
+            if (viewModel.isCountDowning.value == true) {
+                return@setOnClickListener
+            }
             if (phoneTextField.text.trim().isEmpty()) {
                 val msg = resources.getString(R.string.login_phone_placeholder)
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             lifecycleScope.launch {
-                viewModel.getCodeNetworking(phoneTextField.text.trim().toString())
+                viewModel.startCountDown()
+
+                try {
+                    val response = viewModel.getCodeNetworking(phoneTextField.text.trim().toString())
+                    if (response.code != 200) {
+                        val msg = resources.getString(R.string.code_send_error)
+                        Toast.makeText(BaseApplication.context, msg, Toast.LENGTH_SHORT).show()
+                        viewModel.stopCountDown()
+                    }else{
+                        Log.d("TAG","fuck ${response.code} ${response.data}")
+                    }
+                }catch (e: Exception) {
+                    Log.d("TAG","fuck ${e}")
+                }
+
             }
         }
 
@@ -211,12 +232,13 @@ class LoginActivity : AppCompatActivity() {
 
         // viewModel
         viewModel.loginStatus.observe(this) {response ->
-            response.let {
-                if (response?.code == 200) {
+            response?.let {
+                if (response.code == 200) {
                     val msg = resources.getString(R.string.login_success)
                     Toast.makeText(this,msg, Toast.LENGTH_SHORT).show()
+                    viewModel.cleanLoginStatus()
                 }else {
-                    val msg = response?.message ?: resources.getString(R.string.login_fail)
+                    val msg = response.message ?: resources.getString(R.string.login_fail)
                     Toast.makeText(this,msg, Toast.LENGTH_SHORT).show()
                     viewModel.cleanLoginStatus()
                 }
@@ -238,7 +260,7 @@ class LoginActivity : AppCompatActivity() {
                 showPassword?.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.icon_eye_b))
             }else{
                 // 切换到密码模式
-                passwordTextField.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                passwordTextField.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
                 showPassword?.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.icon_eye_o))
             }
         }
@@ -277,6 +299,22 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        viewModel.isCountDowning.observe(this) {
+            if (it) {
+                return@observe
+            }else{
+                getCodeBtn?.text = resources.getText(R.string.login_get_code)
+            }
+        }
+
+        viewModel.countDownStatus.observe(this) {
+            if (viewModel.isCountDowning.value == true) {
+                getCodeBtn?.text = viewModel.countDownStatus.value?.let { "$it s" }
+            }
+        }
+
+        viewModel.loginStatus
+
         // 点击背景取消输入框第一响应者
         val bgContainer = binding.container
         bgContainer.setOnClickListener {
@@ -310,7 +348,7 @@ class LoginActivity : AppCompatActivity() {
                 agreementLayout?.visibility = View.GONE
 
                 passwordTextField.hint = resources.getText(R.string.register_input_code)
-                passwordTextField.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                passwordTextField.inputType = InputType.TYPE_CLASS_TEXT
                 loginBtn.text = resources.getText(R.string.login_check_code)
 
                 getCodeBtn?.visibility = View.VISIBLE
@@ -326,19 +364,20 @@ class LoginActivity : AppCompatActivity() {
                 getCodeBtn?.visibility = View.GONE
 
                 phoneTextField.hint = resources.getText(R.string.login_input_password)
+                phoneTextField.inputType = InputType.TYPE_CLASS_TEXT
                 passwordTextField.hint = resources.getText(R.string.login_input_password_again)
-                passwordTextField.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                passwordTextField.inputType = InputType.TYPE_CLASS_TEXT
             }
 
             "register" -> {
                 findBtn?.visibility = View.GONE
                 registerBtn?.visibility = View.GONE
-                agreementLayout?.visibility = View.GONE
+                agreementLayout?.visibility = View.VISIBLE
                 loginBtn.text = resources.getText(R.string.register_action)
                 showPassword?.visibility = View.VISIBLE
                 getCodeBtn?.visibility = View.GONE
-                phoneTextField.hint = resources.getText(R.string.login_input_password)
-                passwordTextField.hint = resources.getText(R.string.login_input_password_again)
+                phoneTextField.hint = resources.getText(R.string.login_phone_placeholder)
+                passwordTextField.hint = resources.getText(R.string.register_input_password)
             }
         }
     }
